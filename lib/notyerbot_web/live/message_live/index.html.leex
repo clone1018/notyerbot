@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-1">
+    <%= for guild <- @guilds do %>
+    <div class="card text-center">
+      <img src="https://cdn.discordapp.com/icons/<%= guild.guild_id %>/<%= guild.icon %>.png?size=128" alt=""
+        class="card-img rounded-circle">
+      <div class="card-img-overlay">
+        <%= live_patch guild.name, to: Routes.message_index_path(@socket, :index, guild.guild_id), title: guild.name, class: "stretched-link" %>
+      </div>
+    </div>
+
+    <% end %>
+  </div>
+  <div class="col-2">
+    <%= for channel <- @channels do %>
+    <%= live_patch "#" <> channel.name, to: Routes.message_index_path(@socket, :index, channel.guild_id, channel.channel_id) %>
+    <br>
+    <% end %>
+  </div>
+  <div class="col-9">
+    <%= if @channel do %>
+    <h5>#<%= @channel.name %>: <small><%= @channel.topic %></small></h5>
+
+    <div id="chat-messages" phx-update="replace">
+      <%= for message <- @messages do %>
+      <div id="<%= message.message_id %>">
+        <a href="#<%= message.message_id %>"><%= message.timestamp %></a> <%= message.author_username %>:
+        <%= message.content %>
+      </div>
+      <% end %>
+    </div>
+
+    <% else %>
+    <p>Select a channel on the left.</p>
+    <% end %>
+  </div>
+</div>
